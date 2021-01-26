@@ -4,14 +4,18 @@ require('dotenv').config()
 
 const app = express();
 
+const allowed_origins = process.env.CORS_ORIGIN.split(',').map(i => i.trim(' '));
+
 const options = {
   target: process.env.PROXY_TARGET,
   changeOrigin: true
 }
 if ( process.env.STRICT_SSL == 'false' ) { options.secure = false };
-if ( process.env.CORS_ORIGIN !== undefined ) {
-  options.onProxyRes = (proxyRes) => {
-    proxyRes.headers['Access-Control-Allow-Origin'] = process.env.CORS_ORIGIN;
+if ( allowed_origins ) {
+  options.onProxyRes = (proxyRes, req, res) => {
+    if ( allowed_origins.includes(req.headers.origin) ) {
+      proxyRes.headers['Access-Control-Allow-Origin'] = req.headers.origin;
+    }
   };
 }
 
