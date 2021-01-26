@@ -12,9 +12,13 @@ const options = {
 }
 if ( process.env.STRICT_SSL == 'false' ) { options.secure = false };
 if ( allowed_origins ) {
-  options.onProxyRes = (proxyRes, req, res) => {
+  options.onProxyRes = (proxyRes, req) => {
+    console.log(`allowed: ${allowed_origins}`);
+    console.log(`request: ${req.headers.origin}`);
     if ( allowed_origins.includes(req.headers.origin) ) {
+      console.log("allowing");
       proxyRes.headers['Access-Control-Allow-Origin'] = req.headers.origin;
+      console.log(proxyRes.headers);
     }
   };
 }
