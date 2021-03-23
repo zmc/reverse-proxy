@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 require('dotenv').config()
 
@@ -23,5 +24,6 @@ if ( allowed_origins ) {
   };
 }
 
+app.use(compression());
 app.use('/', createProxyMiddleware(options));
 app.listen(process.env.PORT || 3000);
